@@ -1,0 +1,9 @@
+{
+    "path" : "~/projects/example_map",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

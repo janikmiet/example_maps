@@ -1,0 +1,30 @@
+---
+title: "Untitled"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+## Basic map ----
+library(geofi)
+library(ggplot2)
+municipalities <- get_municipalities(year = 2019, scale = 4500)
+ggplot(municipalities) + 
+  geom_sf(aes(fill = as.integer(kunta)))
+
+```
+
+
+
+## Useful links
+
+geofi R Package <https://github.com/rOpenGov/geofi>
+Leaflet for R <https://rstudio.github.io/leaflet/>
+PXWeb API interface for R <https://cran.r-project.org/web/packages/pxweb/vignettes/pxweb.html>
+PXWeb API HELP <https://www.stat.fi/static/media/uploads/org_en/avoindata/px-web_api-help.pdf>
