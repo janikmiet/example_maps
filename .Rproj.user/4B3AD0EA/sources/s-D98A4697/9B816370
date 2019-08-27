@@ -1,18 +1,18 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1566892168790.000,
+    "created" : 1566892943883.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
     "hash" : "0",
-    "id" : "1ED340AD",
-    "lastKnownWriteTime" : 1566892679,
-    "last_content_update" : 1566892679795,
+    "id" : "9B816370",
+    "lastKnownWriteTime" : 1566892960,
+    "last_content_update" : 1566892960828,
     "path" : "~/projects/example_map/README.Rmd",
     "project_path" : "README.Rmd",
     "properties" : {
-        "cursorPosition" : "23,61",
+        "cursorPosition" : "30,0",
         "scrollLine" : "0",
         "tempName" : "Untitled1"
     },
