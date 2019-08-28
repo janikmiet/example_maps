@@ -1,3 +1,5 @@
+# Basic maps by R
+
 library(geofi)
 library(ggplot2)
 library(dplyr)

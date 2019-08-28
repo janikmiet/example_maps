@@ -1,4 +1,4 @@
-# Interactive map of population in Kuopio
+# Interactive map of population 
 # Leaflet map with postcoded areas, population size and average age
 
 library(geofi)
@@ -11,17 +11,15 @@ library(tidyr)
 
 ## Get post code map data ----
 zipcodes <- get_zipcodes(year = 2019) 
-zipcodes_kuopio <- zipcodes %>% 
-  filter(kunta == 297)
 # test zipcodes map
-ggplot(zipcodes_kuopio) +
+ggplot(zipcodes) +
   geom_sf(aes(fill = as.integer(posti_alue)))
 
 # zipcodes_kuopio$posti_alue # kuopion postinumerot
 
 
 ## Get stat.fi data ----
-pxweb_query_list <- list("Postinumeroalue" = zipcodes_kuopio$posti_alue,
+pxweb_query_list <- list("Postinumeroalue" = zipcodes$posti_alue,
                          "Tiedot" = c("He_vakiy", "He_kika"))
 px_data <- pxweb_get(url = "http://pxnet2.stat.fi/PXWeb/api/v1/fi/Postinumeroalueittainen_avoin_tieto/2019/paavo_1_he_2019.px",
                      query = pxweb_query_list)
@@ -35,7 +33,7 @@ tk_data <- tk_data %>%
   as_tibble()
 
 ## Join datasets and transform to leaflet data ----
-dat <- left_join(zipcodes_kuopio, tk_data)
+dat <- left_join(zipcodes, tk_data)
 zipcodes_lonlat <- sf::st_transform(x = dat, crs = "+proj=longlat +datum=WGS84")
 
 

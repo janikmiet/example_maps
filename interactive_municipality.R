@@ -1,5 +1,4 @@
-# Interactive map of population in Kuopio
-# Leaflet map with postcoded areas, population size and average age
+# Draw interactive map of population with postcoded areas, population size and average age
 
 library(geofi)
 library(ggplot2)
@@ -9,20 +8,19 @@ library(janitor)
 library(pxweb)
 library(tidyr)
 
+municipality <- "Helsinki" # Selected municipality
+
 ## Get post code map data ----
-zipcodes <- get_zipcodes(year = 2019) 
-zipcodes_kuopio <- zipcodes %>% 
-  filter(kunta == 297)
+municipalities <- get_municipalities(year = 2019) %>% filter(nimi == municipality)
+zipcodes <- get_zipcodes(year = 2019) %>% filter(kunta == municipalities$kunta)
 # test zipcodes map
-ggplot(zipcodes_kuopio) +
+ggplot(zipcodes) +
   geom_sf(aes(fill = as.integer(posti_alue)))
 
-# zipcodes_kuopio$posti_alue # kuopion postinumerot
-
-
 ## Get stat.fi data ----
-pxweb_query_list <- list("Postinumeroalue" = zipcodes_kuopio$posti_alue,
-                         "Tiedot" = c("He_vakiy", "He_kika"))
+pxweb_query_list <- list("Postinumeroalue" = zipcodes$posti_alue,
+                         "Tiedot" = c("He_vakiy", 
+                                      "He_kika"))
 px_data <- pxweb_get(url = "http://pxnet2.stat.fi/PXWeb/api/v1/fi/Postinumeroalueittainen_avoin_tieto/2019/paavo_1_he_2019.px",
                      query = pxweb_query_list)
 # wrangle to data frame
@@ -35,20 +33,22 @@ tk_data <- tk_data %>%
   as_tibble()
 
 ## Join datasets and transform to leaflet data ----
-dat <- left_join(zipcodes_kuopio, tk_data)
+dat <- left_join(zipcodes, tk_data)
 zipcodes_lonlat <- sf::st_transform(x = dat, crs = "+proj=longlat +datum=WGS84")
 
 
 ## Plot leaflet map ----
 leaflet(zipcodes_lonlat) %>% 
-  addTiles() %>% 
+  addProviderTiles(provider = "OpenStreetMap") %>% 
   addPolygons(color = "coral", 
               weight = 1,
               smoothFactor = .5,
               opacity = .9,
               fillColor = ~colorBin(palette = "plasma", asukkaat_yhteensa_2017_he)(asukkaat_yhteensa_2017_he),
               fillOpacity = 0.5,
-              label = ~paste0(nimi, " (", posti_alue ,") ", asukkaat_yhteensa_2017_he, " asukasta, keski-ikä ",asukkaiden_keski_ika_2017_he," vuotta"),
+              popup = ~paste0("<b>", nimi, " (", posti_alue ,") </b> <br/> Asukkaita: ", asukkaat_yhteensa_2017_he, "<br/> Keski-ikä ",asukkaiden_keski_ika_2017_he," vuotta"),
+              label = ~paste0(nimi),
+              popupOptions = list(closeButton=FALSE),
               highlightOptions = highlightOptions(color = "white", 
                                                   weight = 2,
                                                   bringToFront = TRUE))
